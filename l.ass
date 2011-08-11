@@ -1,0 +1,37 @@
+[Script info]
+; // Srt2Ass
+ ; // http
+Title:YYeTs
+Original Script:YYeTs
+Synch Point:0
+Test:1234
+ScriptType:v4.00+
+Collisions:Normal
+Timer:100.0000
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,GBK,21,&H00FFFFFF,&HF0000000,&H006C3300,&H00000000,-1,0,0,0,100,100,0,0.00,1,2,1,2,5,5,5,134
+Style: Default,GBK,20,&H00FFFFFF,&HF0000000,&H006C3300,&H00000000,-1,0,0,0,100,100,0,0.00,1,2,1,2,5,5,5,134
+Style2: Default,GBK,22,&H00FFFFFF,&HF0000000,&H006C3300,&H00000000,-1,0,0,0,100,100,0,0.00,1,2,1,2,5,5,5,133
+
+[Events]
+Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 1,0:00:00.00,0:00:03.00,*Default,NTP,0000,0000,0000,,{\fe134}{\fsp0}{\fad(500,500)}{\c&HFFFFFF&}{\pos(190,278)}{\fs16} {\fn方正准圆_GBK}{\bord0}本字幕由{\fs24}{\fn方正综艺_GBK}{\fe0} {\c&H26F4FF&}YYeTs{\fe134}{\fn方正宋黑_GBK}{\c&HFFAE1A&}人人影视 {\fscy100}{\fe134}{\fn方正准圆_GBK}{\c&HFFFFFF&}{\fs16}原创翻译制作\N{\fn方正准圆_GBK}{\fs14}{\b0}{\bord0}{\shad0}{\c&HFFFFFF&}仅供学习 禁止用于任何商业盈利行为\N{\3c&H2F2F2F&}{\4c&H000000&}{\fsp0}{\fs16} {\c&HFFFFFF&}更多影视更新 请登陆 {\c&H26F4FF&}{\fn方正综艺_GBK}{\fs24}www.YYeTs.com
+Dialogue: 0,0:00:00.00,0:00:03.00,*Default,NTP,0000,0000,0000,,{\fe134}{\fsp0}{\fn\fn方正黑体_GBK}{\fad(500,500)}{\3c&H000000&}{\pos(190,290)}{\fs86}{\fscx600}{\alpha&H9F&\c&H000000&}{\bord1}{\shad0}■
+Dialogue: 1,0:00:03.00,0:00:08.13,*Default,NTP,0000,0000,0000,,{\fe134}{\fsp0}{\fad(500,500)}{\pos(190,28)}{\fs16}{\c&H24EFFF&}{\fn方正准圆_GBK}{\bord0}翻译：{\fs18}{\c&HFFFFFF&}梧桐  Ultrabear  飘雪的天空  Angelica
+Dialogue: 0,0:00:03.00,0:00:08.13,*Default,NTP,0000,0000,0000,,{\fe134}{\fsp0}{\fn\fn方正黑体_GBK}{\fad(500,500)}{\3c&H000000&}{\pos(190,38)}{\fs36}{\fscx1600}{\alpha&H9F&\c&H000000&}{\bord1}{\shad0}■
+Dialogue: 1,0:00:08.14,0:00:13.27,*Default,NTP,0000,0000,0000,,{\fe134}{\fsp0}{\fad(500,500)}{\pos(190,28)}{\fs16}{\c&H24EFFF&}{\fn方正准圆_GBK}{\bord0}校对：{\fs18}{\c&HFFFFFF&}saya  小熊嘟嘟      {\fs16}{\c&H24EFFF&}时间轴：{\fs18}{\c&HFFFFFF&}大米饭
+Dialogue: 0,0:00:08.14,0:00:13.27,*Default,NTP,0000,0000,0000,,{\fe134}{\fsp0}{\fn\fn方正黑体_GBK}{\fad(500,500)}{\3c&H000000&}{\pos(190,38)}{\fs36}{\fscx1600}{\alpha&H9F&\c&H000000&}{\bord1}{\shad0}■
+Dialogue: 1,0:00:13.28,0:00:18.41,*Default,NTP,0000,0000,0000,,{\fe134}{\fsp0}{\fad(500,500)}{\pos(190,28)}{\fs16}{\c&H24EFFF&}{\fn方正准圆_GBK}{\bord0}后期：{\fs18}{\c&HFFFFFF&}鱼骨头      {\fs16}{\c&H24EFFF&}总监：{\fs18}{\c&HFFFFFF&}小熊嘟嘟
+Dialogue: 0,0:00:13.28,0:00:18.41,*Default,NTP,0000,0000,0000,,{\fe134}{\fsp0}{\fn\fn方正黑体_GBK}{\fad(500,500)}{\3c&H000000&}{\pos(190,38)}{\fs36}{\fscx1600}{\alpha&H9F&\c&H000000&}{\bord1}{\shad0}■
+Dialogue: 2,0:00:01.74,0:00:02.92,*Default,NTP,0000,0000,0000,,如果\N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}What would happen 
+Dialogue: 0,0:00:02.92,0:00:05.64,*Default,NTP,0000,0000,0000,,地球上的人类全部消失  \N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}if every human being on earth 
+Dialogue: 0,0:00:05.64,0:00:06.94,*Default,NTP,0000,0000,0000,,将会怎样\N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}disappeared?
+Dialogue: 0,0:00:09.21,0:00:12.49,*Default,NTP,0000,0000,0000,,这个故事讲述的不是人类如何消失\N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}This isn't the story of how we might vanish.
+Dialogue: 0,0:00:13.48,0:00:16.62,*Default,NTP,0000,0000,0000,,而是我们消失后的世界  \N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}It is the story of what happens 
+Dialogue: 0,0:00:16.62,0:00:18.19,*Default,NTP,0000,0000,0000,,将会何去何从\N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}to the world we leave behind.
+Dialogue: 0,0:00:21.62,0:00:24.91,*Default,NTP,0000,0000,0000,,本集《人类消失后的世界》\N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}In this episode of life after people:
+Dialogue: 0,0:00:24.91,0:00:27.41,*Default,NTP,0000,0000,0000,,讲述人类最珍贵的金属\N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}Man's most precious metals.
+Dialogue: 0,0:00:27.86,0:00:30.13,*Default,NTP,0000,0000,0000,,在人类消失后的世界\N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}How will gold prove its worth
+Dialogue: 0,0:00:30.13,0:00:32.39,*Default,NTP,0000,0000,0000,,如何证明它的价值呢\N{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}in a future without humans?
