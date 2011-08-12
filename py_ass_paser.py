@@ -128,12 +128,12 @@ class AssEntry:
 	"""
 	def __init__(self, data, section=None):
 		"""
-		data: 存储的raw数据,以unicode字符串形式存储
+		data: 存储的raw数据, 以unicode字符串形式存储, 头尾空白已去除
 		type: Entry类型
 		section: Ass section 标志
 		"""
 		try:
-			self.data = data.strip()
+			self.data = data.strip()		#去除头尾空白
 		except:
 			print 'Exception is catched: data type is invaild!'
 			self.data = ''
@@ -143,9 +143,12 @@ class AssEntry:
 			self.section = None
 		else:
 			self.section = section
-
-    #def __init__(self, filename=None):
-    #    self["name"] = filename
+			
+	def dump(self):
+		"""
+		dump internal data
+		"""
+		print self.data.encode('utf-8')
 
 class AssEntryInfo(AssEntry):
 	"""
@@ -155,12 +158,17 @@ class AssEntryInfo(AssEntry):
 	"""
 	def __init__(self, data, section):
 		AssEntry.__init__(self, data, section)
-		self.data = data
 		self.type = ENTRY_SCRIPT_INFO
+		self.__init_data()
+		self.need_update = False		#if need update self.data from internal data
+		self.parse()
+
+	def __init_data(self):
+		"""
+		init internal data here
+		"""
 		self.title = ''
 		self.content = ''
-		self.parse()
-		self.need_update = False
 
 	def get_type(self):
 		return ENTRY_SCRIPT_INFO
@@ -177,14 +185,13 @@ class AssEntryInfo(AssEntry):
 			print 'comment line found: should raise exception here!'
 		
 		item = self.data.split(':', 1)
-		#if len(item) != 2:
-		#	print 'un: should raise exception here!'
+
 		try:
 			#strip
 			item[0] = item[0].strip()
 			item[1] = item[1].strip()
-		except IndexError, msg:
-			print msg
+		except IndexError, err_msg:
+			print IndexError, ':', err_msg		#无效索引
 		else:
 			if item[0].lower() == Title.lower():	#start with "Title:"
 				self.title = item[0]	#提取Title后的文本
@@ -239,23 +246,20 @@ class AssEntryInfo(AssEntry):
 				self.title = item[0]	#提取文本
 				self.content = item[1]
 			else:
-				raise UnknowDataError("%%Warnning: Unknow Data: '%s'%%" % (self.data) )
-				#print ("%%Warnning: Unknow Data: '%s'%%" % (self.data) )
+				raise UnknowDataError('Unknow Data <%s>' % (self.data) )
+				#print ("Warnning: Unknow Data: '%s'" % (self.data) )
 
-	def form_data():
+	def form_data(self):
 		"""
 		根据内部信息生成数据，并直接返回
 		"""
 		return 
 
-	def update_data():
+	def update_data(self):
 		"""
 		根据内部信息更新data数据
 		"""
 		pass
-		
-	def dump():
-		print self.data
 
 class AssEntryStyle(AssEntry):
 	"""
@@ -265,17 +269,29 @@ class AssEntryStyle(AssEntry):
 	def __init__(self, data, section):
 		AssEntry.__init__(self, data, section)
 		self.type = ENTRY_STYLE
+		self.__init_data()
+		self.need_update = False
+		self.parse()
+		
+	def __init_data(self):
+		"""
+		init internal data here
+		"""
+		pass
 
-	def get_type():
+	def get_type(self):
 		return ENTRY_STYLE
+
+	def parse(self):
+		pass
 	
-	def form_data():
+	def form_data(self):
 		"""
 		根据tag信息生成数据，并直接返回
 		"""
 		pass
 		
-	def update_data():
+	def update_data(self):
 		"""
 		根据tag信息更新data数据
 		"""
@@ -288,46 +304,30 @@ class AssEntryDialogue(AssEntry):
 	"""
 	def __init__(self, data, section):
 		AssEntry.__init__(self, data, section)
-		self.data = data
 		self.type = ENTRY_DIALOGUE
 		##self.comment = False
 		##self.title = ''
 		##self.content = ''
-		self.parse()
 		self.need_update = False
+		self.parse()
 
-	def get_type():
+	def get_type(self):
 		return ENTRY_DIALOGUE
 		
 	def parse(self):
 		pass
 	
-	def form_data():
+	def form_data(self):
 		"""
 		根据tag信息生成数据，并直接返回
 		"""
 		pass
 		
-	def update_data():
+	def update_data(self):
 		"""
 		根据tag信息更新data数据
 		"""
 		pass
-
-##class AssEntryComment(AssEntry):
-##	"""
-##	AssDialogue类
-##	实现[Events] Section中的Comment项目存储和操作
-##	"""
-##	def __init__(self, data, section):
-##		AssEntry.__init__(self, data, section)
-##		self.type = ENTRY_COMMENT
-##
-##	def get_type():
-##		return ENTRY_COMMENT
-
-##class AssSectionBase:
-##	pass
 	
 class AssScriptInfo:
 	"""
@@ -339,19 +339,17 @@ class AssScriptInfo:
 	def parse(self, line):
 		try:
 			info = AssEntryInfo(line, '[Script Info]')
-		except UnknowDataError, msg:
-			print msg
+		except UnknowDataError, err_msg:
+			print Exception, ':', err_msg
 		else:
 			self.script_info.append(info)
 			
 	def dump(self):
-		print ('===========================================================')
 		print ('================= Script Info Dump Begin ==================')
+		print '[Script Info]'
 		for i in range(len(self.script_info)):
-			#print '%s:%s' % (self.script_info[i].title, self.script_info[i].content)
-			print '%s' % (self.script_info[i].data)
+			self.script_info[i].dump()
 		print ('================== Script Info Dump End ===================')
-		print ('===========================================================')
 
 class AssStyles:
 	"""
@@ -359,22 +357,28 @@ class AssStyles:
 	"""
 	def __init__(self):
 		self.styles = []
+		self.format = ''
 		
 	def parse(self, line):
-		try:
-			style = AssEntryStyle(line, '[Styles]')
-		except UnknowDataError, msg:
-			print msg
-		else:
-			self.styles.append(style)
+		if line.startswith('Format:'):
+			self.format= 'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text'
+		elif line.startswith('Style:'):
+			try:
+				style = AssEntryStyle(line, '[Styles]')
+			except UnknowDataError, err_msg:
+				print UnknowDataError, ':', err_msg
+			else:
+				self.styles.append(style)
+		elif line:
+			raise UnknowDataError('Unknow Data <%s>' % (line))
 			
 	def dump(self):
-		print ('===========================================================')
 		print ('================== ASS Style Dump Begin ===================')
+		print '[Styles]'
+		print self.format
 		for i in range(len(self.styles)):
-			print '%s' % (self.styles[i].data)
+			self.styles[i].dump()
 		print ('=================== ASS Style Dump End ====================')
-		print ('===========================================================')
 
 class AssEvents:
 	"""
@@ -382,33 +386,35 @@ class AssEvents:
 	"""
 	def __init__(self):
 		self.events = []
-		##self.dialogue = []
-		##self.comment = []
+		self.format = ''
 		
 	def parse(self, line):
-		try:
-			event = AssEntryDialogue(line, '[Events]')
-		except UnknowDataError, msg:
-			print msg
+		if line.startswith('Format:'):
+			self.format= 'Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding'
+		#elif line.startswith('Dialogue:'):
 		else:
-			pass
-			self.events.append(event)
+			try:
+				event = AssEntryDialogue(line, '[Events]')
+			except UnknowDataError, err_msg:
+				print UnknowDataError, ':', err_msg
+			else:
+				self.events.append(event)
 			
 	def dump(self):
-		print ('===========================================================')
 		print ('================== ASS Event Dump Begin ===================')
+		print '[Events]'
+		print self.format
 		for i in range(len(self.events)):
-			print ('%s' % (self.events[i].data)).encode('gb2312')
+			self.events[i].dump()
 		print ('=================== ASS Event Dump End ====================')
-		print ('===========================================================')
 	
-#class AssParseBase:
-#	"""
-#	ASS解析基类
-#	实现基本的通用功能
-#	"""
-#	def __init__(self):
-#		print ('AssParseBase init')
+##class AssParseBase:
+##	"""
+##	ASS解析基类
+##	实现基本的通用功能
+##	"""
+##	def __init__(self):
+##		print ('AssParseBase init')
 import codecs
 class FileBase:
 	"""
@@ -437,9 +443,8 @@ class FileBase:
 			lines = f.readlines()
 			for i in range(len(lines)):
 				self.line_handle(lines[i])
-
-		except IOError, msg: 
-			print msg
+		except IOError, err_msg: 
+			print IOError, ':', err_msg
 			self.filename = ''
 		#except:
 		#	pass
@@ -522,7 +527,7 @@ class AssParse(AssFile):
 	"""
 	Ass Pase Class
 	"""
-	def __init__(self, filename, encoding = 'utf-8'):
+	def __init__(self, filename, encoding = 'utf-8', err_ignore = False):
 		"""
 		初始化here
 		"""
@@ -542,40 +547,43 @@ class AssParse(AssFile):
 			self.parse_line(self.lines[i])
 		
 	def parse_line(self, line):
-		if line.lower() == '[script info]':
-			self.section = '[Script Info]'
+		try:
+			if line.lower() == '[script info]':
+				self.section = '[Script Info]'
+				
+			elif line.lower() == '[v4 styles]':
+				self.section = '[V4+ Styles]'
+				self.version = 0
+				
+			elif line.lower() == '[v4+ styles]':
+				self.section = '[V4+ Styles]'
+				self.version = 1
+				
+			elif line.lower() == '[v4++ styles]':
+				self.section = '[V4+ Styles]'
+				self.version = 2
+				
+			elif line.lower() == '[events]':
+				self.section = '[Events]'
+				
+			elif not self.section:
+				raise UnknowDataError('Unknow Section: <%s>' % (line))
 			
-		elif line.lower() == '[v4 styles]':
-			self.section = '[V4+ Styles]'
-			self.version = 0
-			
-		elif line.lower() == '[v4+ styles]':
-			self.section = '[V4+ Styles]'
-			self.version = 1
-			
-		elif line.lower() == '[v4++ styles]':
-			self.section = '[V4+ Styles]'
-			self.version = 2
-			
-		elif line.lower() == '[events]':
-			self.section = '[Events]'
-			
-		elif not self.section:
-			raise UnknowDataError('Unkonw Section')
-		
-		else:
-			if self.section == '[Script Info]':
-				self.script_info.parse(line)
-			elif self.section == '[V4+ Styles]':
-				self.styles.parse(line)
-			elif self.section == '[Events]':
-				self.events.parse(line)
 			else:
-				raise UnknowDataError('Unkonw Data')
-			
+				if self.section == '[Script Info]':
+					self.script_info.parse(line)
+				elif self.section == '[V4+ Styles]':
+					self.styles.parse(line)
+				elif self.section == '[Events]':
+					self.events.parse(line)
+				else:
+					raise UnknowDataError("Unkonw Data: <%s>" % (line))
+
+		except UnknowDataError, err_msg:
+			print UnknowDataError, ':', err_msg
 
 if __name__ == "__main__" :
-	# just for test here
+	# just for test
 
 	filename = './l.ass'
 	coding = 'utf-8'
