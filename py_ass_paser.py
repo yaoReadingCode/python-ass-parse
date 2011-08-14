@@ -105,7 +105,7 @@ ENTRY_DIALOGUE = 1000
 
 class UnknowDataError(Exception):
 	"""
-	未知数据异常
+	未知数据
 	"""
 	def __init__(self, value):
 		self.value = value
@@ -114,7 +114,7 @@ class UnknowDataError(Exception):
 
 class InvaildDataError(Exception):
 	"""
-	非法数据异常
+	非法数据
 	"""
 	def __init__(self, value):
 		self.value = value
@@ -261,6 +261,74 @@ class AssEntryInfo(AssEntry):
 		"""
 		pass
 
+class AssColor:
+	"""
+	Ass Color
+	RGB&Alpha
+	"""
+	def __init__(self, color = None):
+		"""
+		init AssColor
+		
+		self.r	#red
+		self.g	#green
+		self.b	#blue
+		self.a	#alpha
+		"""
+		if color is None:
+			(self.r, self.g, self.b, self.a) = (0, 0, 0, 0)
+		else:
+			parse(color)
+			
+	def parse(self, color):
+		"""
+		parse ass/srt color
+		
+		######///TODO:
+		color format &HAABBGGRR
+		ass color format as:  &H00FFFFFF
+		ssa color format as:  &Hffffff
+		srt/html color format as: #990000
+		srt color format as: {\3c&Hd22c255&} or {\2c&Hd22c125&}
+		"""
+		#re.search(r'&H([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2}?)&?', u'&H00FFFFFF&').groups()
+		except_raise = False
+		low_color = color.lower()
+		if low_color.startswith('&h'):
+			len = len(low_color)
+			try:
+				if len == 10:
+					#	&HAABBGGRR
+					alpha = int(low_color[2:4], 16)
+					blue = int(low_color[4:6], 16)
+					green = int(low_color[6:8], 16)
+					red = int(low_color[8:10], 16)
+				elif len == 8:
+					# &HBBGGRR
+					alpha = 0
+					blue = int(low_color[2:4], 16)
+					green = int(low_color[4:6], 16)
+					red = int(low_color[6:8], 16)
+			except:
+				except_raise = True
+		else:
+			except_raise = True
+		
+		if except_raise is False:
+			(self.r, self.g, self.b, self.a) = (red, green, blue, alpha)
+		else:
+			(self.r, self.g, self.b, self.a) = (0, 0, 0, 0)
+			raise InvaildDataError('Invaild Data <%s>' % (color) )
+
+	def get_ass_color(self):
+		return '&H%02x%02x%02x%02x' % (self.a, self.b, self.g, self.r)
+		
+	def get_ssa_formated_color(self):
+		return '&H%02x%02x%02x%02x' % (self.a, self.b, self.g, self.r)
+		
+	def get_srt_formated_color(self):
+		pass
+
 class AssEntryStyle(AssEntry):
 	"""
 	AssStyle类
@@ -271,20 +339,57 @@ class AssEntryStyle(AssEntry):
 		self.type = ENTRY_STYLE
 		self.__init_data()
 		self.need_update = False
-		self.parse()
+		self.parse(self.data)
 		
 	def __init_data(self):
 		"""
 		init internal data here
+		Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, 
+		ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 		"""
-		pass
+
+		self.name = ''
+		self.fontname = ''
+		self.fontsize = ''
+		
+		self.primary_color = AssColor()
+		self.secondary_color = AssColor()
+		self.outline_color = AssColor()
+		self.back_color = AssColor()
+		
+		self.bold = 0
+		self.italic = 0
+		self.underline = 0
+		self.strikeout = 0
+		
+		self.scalex = 0
+		self.scaley = 0
+		self.spacing = 0
+		self.angle = 0
+		self.borderstyle = 0
+		self.outline = 0
+		self.shadow = 0
+		self.alignment = 0
+		self.margin_l = 0
+		self.margin_r = 0
+		self.margin_v = 0
+		self.encoding = 0
 
 	def get_type(self):
 		return ENTRY_STYLE
 
-	def parse(self):
-		pass
-	
+	def parse(self, line):
+		try:
+			style_list = line.split(':', 1)
+			style_list = style_list[1].split(',')
+			
+		except IndexError, msg:
+			print IndexError, ':', msg
+			return
+		else:
+			pass
+		
+		
 	def form_data(self):
 		"""
 		根据tag信息生成数据，并直接返回
