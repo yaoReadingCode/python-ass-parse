@@ -1,0 +1,78 @@
+﻿1
+00:00:00,000 --> 00:00:03,000
+{\fe134}{\fsp0}{\fad(500,500)}{\c&HFFFFFF&}{\pos(190,278)}{\fs16} {\fn方正准圆_GBK}{\bord0}本字幕由{\fs24}{\fn方正综艺_GBK}{\fe0} {\c&H26F4FF&}YYeTs{\fe134}{\fn方正宋黑_GBK}{\c&HFFAE1A&}人人影视 {\fscy100}{\fe134}{\fn方正准圆_GBK}{\c&HFFFFFF&}{\fs16}原创翻译制作
+{\fn方正准圆_GBK}{\fs14}{\b0}{\bord0}{\shad0}{\c&HFFFFFF&}仅供学习 禁止用于任何商业盈利行为
+{\3c&H2F2F2F&}{\4c&H000000&}{\fsp0}{\fs16} {\c&HFFFFFF&}更多影视更新 请登陆 {\c&H26F4FF&}{\fn方正综艺_GBK}{\fs24}www.YYeTs.com
+
+2
+00:00:00,000 --> 00:00:03,000
+{\fe134}{\fsp0}{\fn\fn方正黑体_GBK}{\fad(500,500)}{\3c&H000000&}{\pos(190,290)}{\fs86}{\fscx600}{\alpha&H9F&\c&H000000&}{\bord1}{\shad0}■
+
+3
+00:00:03,000 --> 00:00:08,130
+{\fe134}{\fsp0}{\fad(500,500)}{\pos(190,28)}{\fs16}{\c&H24EFFF&}{\fn方正准圆_GBK}{\bord0}翻译：{\fs18}{\c&HFFFFFF&}梧桐  Ultrabear  飘雪的天空  Angelica
+
+4
+00:00:03,000 --> 00:00:08,130
+{\fe134}{\fsp0}{\fn\fn方正黑体_GBK}{\fad(500,500)}{\3c&H000000&}{\pos(190,38)}{\fs36}{\fscx1600}{\alpha&H9F&\c&H000000&}{\bord1}{\shad0}■
+
+5
+00:00:08,140 --> 00:00:13,270
+{\fe134}{\fsp0}{\fad(500,500)}{\pos(190,28)}{\fs16}{\c&H24EFFF&}{\fn方正准圆_GBK}{\bord0}校对：{\fs18}{\c&HFFFFFF&}saya  小熊嘟嘟      {\fs16}{\c&H24EFFF&}时间轴：{\fs18}{\c&HFFFFFF&}大米饭
+
+6
+00:00:08,140 --> 00:00:13,270
+{\fe134}{\fsp0}{\fn\fn方正黑体_GBK}{\fad(500,500)}{\3c&H000000&}{\pos(190,38)}{\fs36}{\fscx1600}{\alpha&H9F&\c&H000000&}{\bord1}{\shad0}■
+
+7
+00:00:13,280 --> 00:00:18,410
+{\fe134}{\fsp0}{\fad(500,500)}{\pos(190,28)}{\fs16}{\c&H24EFFF&}{\fn方正准圆_GBK}{\bord0}后期：{\fs18}{\c&HFFFFFF&}鱼骨头      {\fs16}{\c&H24EFFF&}总监：{\fs18}{\c&HFFFFFF&}小熊嘟嘟
+
+8
+00:00:13,280 --> 00:00:18,410
+{\fe134}{\fsp0}{\fn\fn方正黑体_GBK}{\fad(500,500)}{\3c&H000000&}{\pos(190,38)}{\fs36}{\fscx1600}{\alpha&H9F&\c&H000000&}{\bord1}{\shad0}■
+
+9
+00:00:01,740 --> 00:00:02,920
+如果
+{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}What would happen
+
+10
+00:00:02,920 --> 00:00:05,640
+地球上的人类全部消失  
+{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}if every human being on earth
+
+11
+00:00:05,640 --> 00:00:06,940
+将会怎样
+{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}disappeared?
+
+12
+00:00:09,210 --> 00:00:12,490
+这个故事讲述的不是人类如何消失
+{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}This isn't the story of how we might vanish.
+
+13
+00:00:13,480 --> 00:00:16,620
+而是我们消失后的世界  
+{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}It is the story of what happens
+
+14
+00:00:16,620 --> 00:00:18,190
+将会何去何从
+{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}to the world we leave behind.
+
+15
+00:00:24,910 --> 00:00:27,410
+讲述人类最珍贵的金属
+{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}Man's most precious metals.
+
+16
+00:00:27,860 --> 00:00:30,130
+在人类消失后的世界
+{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}How will gold prove its worth
+
+17
+00:00:30,130 --> 00:00:32,390
+如何证明它的价值呢
+{\fn方正综艺_GBK}{\fs14}{\b0}{\c&HFFFFFF&}{\3c&H2F2F2F&}{\4c&H000000&}in a future without humans?
