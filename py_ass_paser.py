@@ -144,11 +144,12 @@ class AssEntry:
 		else:
 			self.section = section
 			
-	def dump(self):
+	def dump(self, encoding = 'utf-8'):
 		"""
 		dump internal data
 		"""
-		print self.data.encode('utf-8')
+		#print self.data.encode('utf-8')
+		print self.data.encode(encoding)
 
 class AssEntryInfo(AssEntry):
 	"""
@@ -320,26 +321,45 @@ class AssColor:
 			(self.r, self.g, self.b, self.a) = (0, 0, 0, 0)
 			raise InvaildDataError('Invaild Data <%s>' % (color) )
 
-	def get_ass_color(self):
+	def get_ass_formated_color(self):
 		return '&H%02x%02x%02x%02x' % (self.a, self.b, self.g, self.r)
 		
 	def get_ssa_formated_color(self):
 		return '&H%02x%02x%02x%02x' % (self.a, self.b, self.g, self.r)
-		
+
 	def get_srt_formated_color(self):
 		pass
 
+#"0" <-> "ANSI"
+#"1" <-> "Default"
+#"2" <-> "Symbol"
+#"77" <-> "Mac"
+#"128" <-> "Shift_JIS"
+#"129" <-> "Hangeul"
+#"130" <-> "Johab"
+#"134" <-> "GB2312"
+#"136" <-> "Chinese BIG5"
+#"161" <-> "Greek"
+#"162" <-> "Turkish"
+#"163" <-> "Vietnamese"
+#"177" <-> "Hebrew"
+#"178" <-> "Arabic"
+#"186" <-> "Baltic"
+#"204" <-> "Russian"
+#"222" <-> "Thai"
+#"238" <-> "East European"
+#"255" <-> "OEM"
 class AssEntryStyle(AssEntry):
 	"""
 	AssStyle类
 	实现[Stlyes] Section中的Stlye项目存储和操作
 	"""
-	def __init__(self, data, section):
+	def __init__(self, data, section, version):
 		AssEntry.__init__(self, data, section)
 		self.type = ENTRY_STYLE
 		self.__init_data()
 		self.need_update = False
-		self.parse(self.data)
+		self.parse(self.data, version)
 		
 	def __init_data(self):
 		"""
@@ -378,10 +398,48 @@ class AssEntryStyle(AssEntry):
 	def get_type(self):
 		return ENTRY_STYLE
 
-	def parse(self, line):
+	def parse(self, line, version):
+		"""
+		parse ass style here
+		Note:
+			1. 
+		"""
 		try:
 			style_list = line.split(':', 1)
 			style_list = style_list[1].split(',')
+			
+			#parse
+			self.name = style_list[0].strip()
+			self.fontname = style_list[1].strip()
+			self.fontsize = style_list[2].strip()
+			
+			if version is 0:
+				pass
+				
+			self.primary_color = AssColor()
+			self.secondary_color = AssColor()
+			self.outline_color = AssColor()
+			self.back_color = AssColor()
+			
+			self.bold = 0
+			self.italic = 0
+			self.underline = 0
+			self.strikeout = 0
+			
+			self.scalex = 0
+			self.scaley = 0
+			self.spacing = 0
+			self.angle = 0
+			self.borderstyle = 0
+			self.outline = 0
+			self.shadow = 0
+			self.alignment = 0
+			self.margin_l = 0
+			self.margin_r = 0
+			self.margin_v = 0
+			self.encoding = 0
+
+				
 			
 		except IndexError, msg:
 			print IndexError, ':', msg
@@ -389,18 +447,19 @@ class AssEntryStyle(AssEntry):
 		else:
 			pass
 		
-		
 	def form_data(self):
 		"""
 		根据tag信息生成数据，并直接返回
 		"""
-		pass
+		return 'Style: %s, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d, %s, %s, %s, %s, %d, %s, %s, %i, %i, %i, %i, %i' % \
+					('',)
+		
 		
 	def update_data(self):
 		"""
 		根据tag信息更新data数据
 		"""
-		pass
+		self.data = self.form_data()
 
 class AssEntryDialogue(AssEntry):
 	"""
@@ -426,13 +485,14 @@ class AssEntryDialogue(AssEntry):
 		"""
 		根据tag信息生成数据，并直接返回
 		"""
+		#return '' % ()
 		pass
 		
 	def update_data(self):
 		"""
 		根据tag信息更新data数据
 		"""
-		pass
+		self.data = self.form_data()
 	
 class AssScriptInfo:
 	"""
@@ -464,12 +524,12 @@ class AssStyles:
 		self.styles = []
 		self.format = ''
 		
-	def parse(self, line):
+	def parse(self, line, version):
 		if line.startswith('Format:'):
 			self.format= 'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text'
 		elif line.startswith('Style:'):
 			try:
-				style = AssEntryStyle(line, '[Styles]')
+				style = AssEntryStyle(line, '[Styles]', version)
 			except UnknowDataError, err_msg:
 				print UnknowDataError, ':', err_msg
 			else:
@@ -678,7 +738,7 @@ class AssParse(AssFile):
 				if self.section == '[Script Info]':
 					self.script_info.parse(line)
 				elif self.section == '[V4+ Styles]':
-					self.styles.parse(line)
+					self.styles.parse(line, self.version)
 				elif self.section == '[Events]':
 					self.events.parse(line)
 				else:
