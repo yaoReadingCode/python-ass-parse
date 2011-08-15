@@ -438,57 +438,54 @@ V4.0 Format:
 			style_list = style_list[1].split(',')
 			
 			#parse
-			self.name = style_list[0].strip()
-			self.fontname = style_list[1].strip()
-			##self.fontsize = style_list[2].strip()
-			self.fontsize = int(style_list[2])
+			i = 0;		self.name = style_list[i].strip()			#0
+			i += 1;	self.fontname = style_list[i].strip()		#1
+			i += 1;	self.fontsize = int(style_list[i])			#2
 			
-			if version is 0:				
-				self.primary_color.parse(style_list[3].strip())
-				self.secondary_color.parse(style_list[4].strip())
-				self.outline_color.parse(style_list[6].strip())		##
-				self.back_color.parse(style_list[6].strip())		##
+			i += 1;	self.primary_color.parse(style_list[i].strip())	#3
+			i += 1;	self.secondary_color.parse(style_list[i].strip())#4
+			if version is 0:	
+				i += 1;	self.outline_color.parse(style_list[i+1].strip())		##6
+				i += 1;	self.back_color.parse(style_list[i].strip())		##6
 			else:
-				self.primary_color.parse(style_list[3].strip())
-				self.secondary_color.parse(style_list[4].strip())
-				self.outline_color.parse(style_list[5].strip())
-				self.back_color.parse(style_list[6].strip())	
+				i += 1;	self.outline_color.parse(style_list[i].strip())		#5
+				i += 1;	self.back_color.parse(style_list[i].strip())		#6
 
-			self.bold = int(style_list[7]) and True or False
-			self.italic = int(style_list[8]) and True or False
+			i += 1;	self.bold = int(style_list[i]) and True or False		#7
+			i += 1;	self.italic = int(style_list[i]) and True or False		#8
 
 			if version is not 0:
-				self.underline = int(style_list[9]) and True or False
-				self.strikeout = int(style_list[10]) and True or False
-				self.scalex = float(style_list[11])
-				self.scaley = float(style_list[12])
-				self.spacing = float(style_list[13])
-				self.angle = float(style_list[14])
+				i += 1;	self.underline = int(style_list[i]) and True or False	#9
+				i += 1;	self.strikeout = int(style_list[i]) and True or False	#10
+				i += 1;	self.scalex = float(style_list[i])								#11
+				i += 1;	self.scaley = float(style_list[i])								#12
+				i += 1;	self.spacing = float(style_list[i])								#13
+				i += 1;	self.angle = float(style_list[i])								#14
 			else:
-				self.underline = false;
-				self.strikeout = false;
+				self.underline = False;
+				self.strikeout = False;
 				self.scalex = 100;
 				self.scaley = 100;
 				self.spacing = 0;
 				self.angle = 0.0;		
 		
-			self.borderstyle = int(style_list[15])
-			self.outline = int(style_list[16])
-			self.shadow = int(style_list[17])
-			self.alignment = int(style_list[18])
-			self.margin_l = int(style_list[19])
-			self.margin_r = int(style_list[20])
-			self.margin_v = int(style_list[21])
+			i += 1;	self.borderstyle = int(style_list[i])	#15    /    #15-6
+			i += 1;	self.outline = int(style_list[i])		#16    /    #16-6
+			i += 1;	self.shadow = int(style_list[i])		#17
+			i += 1;	self.alignment = int(style_list[i])		#18
+			i += 1;	self.margin_l = int(style_list[i])		#19
+			i += 1;	self.margin_r = int(style_list[i])		#20
+			i += 1;	self.margin_v = int(style_list[i])		#21
 			#Note: 如果是version=2, 即v4.0++ 则包含4个margin参数
 			#TODO:
+			if version is 2:
+				i += 1; self.margin_4 = int(style_list[i])		#22
 
-			if version is 1:
-				self.encoding = int(style_list[22])
-			elif version is 0:
-				self.encoding = int(style_list[23])
-			elif version is 2:
-				pass
-				#TODO:
+			if version is 0:
+				i += 1
+				i += 1;	self.encoding = int(style_list[i])	#23-6
+			else:
+				i += 1;	self.encoding = int(style_list[i])	#22    /     23
 			
 		except IndexError, msg:
 			print IndexError, ':', msg
@@ -615,11 +612,11 @@ class AssStyles:
 	def dump(self):
 		print ('================== ASS Style Dump Begin ===================')
 		print '[Styles]'
-		print self.format
+		print self.format.data.encode('utf-8')
 		#for i in range(len(self.styles)):
 			#self.styles[i].dump()
 		for i in range(len(self.styles)):
-			print self.styles[i].form_data()
+			print self.styles[i].form_data().encode('utf-8')
 			self.styles[i].dump()
 		print ('=================== ASS Style Dump End ====================')
 
@@ -831,13 +828,20 @@ class AssParse(AssFile):
 if __name__ == "__main__" :
 	# just for test
 
-	filename = './l.ass'
+	filename1 = './l.ass'
+	filename2 = './l.ssa'
 	coding = 'utf-8'
 
-	obj = AssParse(filename, coding)
-	#obj.file_dump()
-	obj.script_info.dump()
-	obj.styles.dump()
-	obj.events.dump()
-	#obj.parse()
-	#obj.dump()
+	obj1 = AssParse(filename1, coding)
+	#obj1.file_dump()
+	obj1.script_info.dump()
+	obj1.styles.dump()
+	obj1.events.dump()
+	#obj1.parse()
+	#obj1.dump()
+	
+	obj2 = AssParse(filename2, coding)
+	#obj2.file_dump()
+	obj2.script_info.dump()
+	obj2.styles.dump()
+	obj2.events.dump()
