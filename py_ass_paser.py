@@ -4,8 +4,8 @@
     Python Ass Parser
 """
 
-import os
-import sys
+#import os
+#import sys
 #import string
 import re
 Section_ScriptInfo=u'[Script Info]'
@@ -126,24 +126,34 @@ class AssEntry:
 	AssEntry类
 	实现基本的数据存储和操作
 	"""
-	def __init__(self, data, section=None):
+	def __init__(self, data='', section=''):
 		"""
 		data: 存储的raw数据, 以unicode字符串形式存储, 头尾空白已去除
 		type: Entry类型
 		section: Ass section 标志
 		"""
-		try:
-			self.data = data.strip()		#去除头尾空白
-		except:
-			print 'Exception is catched: data type is invaild!'
-			self.data = ''
+		self.set_data(data)
 
 		self.type = ENTRY_BASE
 		if not section:
-			self.section = None
+			self.section = ''
 		else:
 			self.section = section
-			
+	
+	def set_data(self, new_data):
+		"""
+		set self.data as new_data
+		"""
+		data = new_data.strip()
+		try:
+			if not data:
+				self.data = ''
+			else:
+				self.data = data.strip()		#去除头尾空白
+		except:
+			print 'Exception is catched: data type is invaild!'
+			self.data = ''
+	
 	def dump(self, encoding = 'utf-8'):
 		"""
 		dump internal data
@@ -296,15 +306,15 @@ class AssColor:
 		except_raise = False
 		low_color = color.lower()
 		if low_color.startswith('&h'):
-			len = len(low_color)
+			length = len(low_color)
 			try:
-				if len == 10:
+				if length == 10:
 					#	&HAABBGGRR
 					alpha = int(low_color[2:4], 16)
 					blue = int(low_color[4:6], 16)
 					green = int(low_color[6:8], 16)
 					red = int(low_color[8:10], 16)
-				elif len == 8:
+				elif length == 8:
 					# &HBBGGRR
 					alpha = 0
 					blue = int(low_color[2:4], 16)
@@ -322,10 +332,10 @@ class AssColor:
 			raise InvaildDataError('Invaild Data <%s>' % (color) )
 
 	def get_ass_formated_color(self):
-		return '&H%02x%02x%02x%02x' % (self.a, self.b, self.g, self.r)
+		return '&H%02X%02X%02X%02X' % (self.a, self.b, self.g, self.r)
 		
 	def get_ssa_formated_color(self):
-		return '&H%02x%02x%02x%02x' % (self.a, self.b, self.g, self.r)
+		return '&H%02X%02X%02X%02X' % (self.a, self.b, self.g, self.r)
 
 	def get_srt_formated_color(self):
 		pass
@@ -353,6 +363,25 @@ class AssEntryStyle(AssEntry):
 	"""
 	AssStyle类
 	实现[Stlyes] Section中的Stlye项目存储和操作
+	
+V4.0+ Format:
+		Name, Fontname, Fontsize, 		#3
+		PrimaryColour, SecondaryColour, OutlineColour, BackColour, 	#4
+		Bold, Italic, 		#2
+		Underline, StrikeOut, 	#2
+		ScaleX, ScaleY, Spacing, Angle, 		#4
+		BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, 	#7
+		Encoding		#1
+		
+V4.0 Format:
+		Name, Fontname, Fontsize, 		#3
+		PrimaryColour, SecondaryColour, TertiaryColour, BackColour, 		#4
+		Bold, Italic, 		#2
+								#0
+								#0
+		BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, 		#7
+		AlphaLevel, 			#1
+		Encoding			#1
 	"""
 	def __init__(self, data, section, version):
 		AssEntry.__init__(self, data, section)
@@ -377,15 +406,15 @@ class AssEntryStyle(AssEntry):
 		self.outline_color = AssColor()
 		self.back_color = AssColor()
 		
-		self.bold = 0
-		self.italic = 0
-		self.underline = 0
-		self.strikeout = 0
+		self.bold = False
+		self.italic = False
+		self.underline = False
+		self.strikeout = False
 		
-		self.scalex = 0
-		self.scaley = 0
-		self.spacing = 0
-		self.angle = 0
+		self.scalex = 0	#Modifies the width of the font. [percent]
+		self.scaley = 0	#Modifies the height of the font. [percent]
+		self.spacing = 0	#Extra space between characters. [pixels]
+		self.angle = 0.0	#The origin of the rotation is defined by the alignment. Can be a floating point number. [degrees]
 		self.borderstyle = 0
 		self.outline = 0
 		self.shadow = 0
@@ -411,35 +440,55 @@ class AssEntryStyle(AssEntry):
 			#parse
 			self.name = style_list[0].strip()
 			self.fontname = style_list[1].strip()
-			self.fontsize = style_list[2].strip()
+			##self.fontsize = style_list[2].strip()
+			self.fontsize = int(style_list[2])
 			
-			if version is 0:
-				pass
-				
-			self.primary_color = AssColor()
-			self.secondary_color = AssColor()
-			self.outline_color = AssColor()
-			self.back_color = AssColor()
-			
-			self.bold = 0
-			self.italic = 0
-			self.underline = 0
-			self.strikeout = 0
-			
-			self.scalex = 0
-			self.scaley = 0
-			self.spacing = 0
-			self.angle = 0
-			self.borderstyle = 0
-			self.outline = 0
-			self.shadow = 0
-			self.alignment = 0
-			self.margin_l = 0
-			self.margin_r = 0
-			self.margin_v = 0
-			self.encoding = 0
+			if version is 0:				
+				self.primary_color.parse(style_list[3].strip())
+				self.secondary_color.parse(style_list[4].strip())
+				self.outline_color.parse(style_list[6].strip())		##
+				self.back_color.parse(style_list[6].strip())		##
+			else:
+				self.primary_color.parse(style_list[3].strip())
+				self.secondary_color.parse(style_list[4].strip())
+				self.outline_color.parse(style_list[5].strip())
+				self.back_color.parse(style_list[6].strip())	
 
-				
+			self.bold = int(style_list[7]) and True or False
+			self.italic = int(style_list[8]) and True or False
+
+			if version is not 0:
+				self.underline = int(style_list[9]) and True or False
+				self.strikeout = int(style_list[10]) and True or False
+				self.scalex = float(style_list[11])
+				self.scaley = float(style_list[12])
+				self.spacing = float(style_list[13])
+				self.angle = float(style_list[14])
+			else:
+				self.underline = false;
+				self.strikeout = false;
+				self.scalex = 100;
+				self.scaley = 100;
+				self.spacing = 0;
+				self.angle = 0.0;		
+		
+			self.borderstyle = int(style_list[15])
+			self.outline = int(style_list[16])
+			self.shadow = int(style_list[17])
+			self.alignment = int(style_list[18])
+			self.margin_l = int(style_list[19])
+			self.margin_r = int(style_list[20])
+			self.margin_v = int(style_list[21])
+			#Note: 如果是version=2, 即v4.0++ 则包含4个margin参数
+			#TODO:
+
+			if version is 1:
+				self.encoding = int(style_list[22])
+			elif version is 0:
+				self.encoding = int(style_list[23])
+			elif version is 2:
+				pass
+				#TODO:
 			
 		except IndexError, msg:
 			print IndexError, ':', msg
@@ -451,8 +500,19 @@ class AssEntryStyle(AssEntry):
 		"""
 		根据tag信息生成数据，并直接返回
 		"""
-		return 'Style: %s, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d, %s, %s, %s, %s, %d, %s, %s, %i, %i, %i, %i, %i' % \
-					('',)
+		return 'Style: %s,%s,%d,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%.2f,%d,%d,%d,%d,%d,%d,%d,%d' % \
+					(self.name, self.fontname, self.fontsize,
+						self.primary_color.get_ass_formated_color(),
+						self.secondary_color.get_ass_formated_color(),
+						self.outline_color.get_ass_formated_color(),
+						self.back_color.get_ass_formated_color(),
+						self.bold and -1 or 0, 
+						self.italic and -1 or 0, 
+						self.underline and -1 or 0, 
+						self.strikeout and -1 or 0,
+						self.scalex, self.scaley, self.spacing, self.angle, self.borderstyle,
+						self.outline, self.shadow, self.alignment, self.margin_l, self.margin_r, self.margin_v, self.encoding
+					)
 		
 		
 	def update_data(self):
@@ -522,14 +582,29 @@ class AssStyles:
 	"""
 	def __init__(self):
 		self.styles = []
-		self.format = ''
+		self.format = AssEntry('', '[Styles]')
+		self.trueversion = -1
 		
 	def parse(self, line, version):
 		if line.startswith('Format:'):
-			self.format= 'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text'
+			try:
+				item_list = line.split(':', 1)[1].split(',')
+				#print item_list
+				length = len(item_list)
+				if length == 18:	#v4.0
+					self.trueversion = 0
+				elif length == 23:	#v4.0+
+					self.trueversion = 1
+				else:
+					self.trueversion = version
+			except IndexError, msg:
+				print IndexError, ':', msg
+
+			self.format.set_data('Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding')
+					
 		elif line.startswith('Style:'):
 			try:
-				style = AssEntryStyle(line, '[Styles]', version)
+				style = AssEntryStyle(line, '[Styles]', self.trueversion)
 			except UnknowDataError, err_msg:
 				print UnknowDataError, ':', err_msg
 			else:
@@ -541,7 +616,10 @@ class AssStyles:
 		print ('================== ASS Style Dump Begin ===================')
 		print '[Styles]'
 		print self.format
+		#for i in range(len(self.styles)):
+			#self.styles[i].dump()
 		for i in range(len(self.styles)):
+			print self.styles[i].form_data()
 			self.styles[i].dump()
 		print ('=================== ASS Style Dump End ====================')
 
@@ -555,7 +633,7 @@ class AssEvents:
 		
 	def parse(self, line):
 		if line.startswith('Format:'):
-			self.format= 'Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding'
+			self.format= 'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text'
 		#elif line.startswith('Dialogue:'):
 		else:
 			try:
@@ -569,7 +647,10 @@ class AssEvents:
 		print ('================== ASS Event Dump Begin ===================')
 		print '[Events]'
 		print self.format
+		#for i in range(len(self.events)):
+			#self.events[i].dump()
 		for i in range(len(self.events)):
+			print self.events[i].form_data()
 			self.events[i].dump()
 		print ('=================== ASS Event Dump End ====================')
 	
