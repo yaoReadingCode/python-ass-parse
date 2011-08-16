@@ -22,7 +22,7 @@ ScaledBorderAndShadow: no
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding
 Style: *Default,方正黑体简体,20,&HFFFFFF,&H000000,&H000000,&H000000,0,0,0,2,1,2,5,5,2,0,134
 Style: Default,GBK,21,&HFFFFFF,&H000000,&H6C3300,&H000000,-1,0,1,2,1,2,5,5,5,0,134
-Style: Default,GBK,20,&HFFFFFF,&H000000,&H6C3300,&H000000,-1,0,1,2,1,2,5,5,5,0,134
+Style2: Default,GBK,20,&HFFFFFF,&H000000,&H6C3300,&H000000,-1,0,1,2,1,2,5,5,5,0,134
 
 [Events]
 Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

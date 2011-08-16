@@ -170,11 +170,11 @@ class AssEntryInfo(AssEntry):
 	def __init__(self, data, section):
 		AssEntry.__init__(self, data, section)
 		self.type = ENTRY_SCRIPT_INFO
-		self.__init_data()
+		self.reset()
 		self.need_update = False		#if need update self.data from internal data
 		self.parse()
 
-	def __init_data(self):
+	def reset(self):
 		"""
 		init internal data here
 		"""
@@ -277,7 +277,7 @@ class AssColor:
 	Ass Color
 	RGB&Alpha
 	"""
-	def __init__(self, color = None):
+	def __init__(self, color = ''):
 		"""
 		init AssColor
 		
@@ -286,7 +286,7 @@ class AssColor:
 		self.b	#blue
 		self.a	#alpha
 		"""
-		if color is None:
+		if not color:
 			(self.r, self.g, self.b, self.a) = (0, 0, 0, 0)
 		else:
 			parse(color)
@@ -386,16 +386,19 @@ V4.0 Format:
 	def __init__(self, data, section, version):
 		AssEntry.__init__(self, data, section)
 		self.type = ENTRY_STYLE
-		self.__init_data()
+		self.reset()
 		self.need_update = False
 		self.parse(self.data, version)
 		
-	def __init_data(self):
+	def reset(self):
 		"""
-		init internal data here
+		reset internal data here
 		Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, 
 		ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 		"""
+		#['Format','Name','Fontname','Fontsize','PrimaryColour','SecondaryColour','OutlineColour','BackColour','Bold','Italic',
+		#'Underline','StrikeOut','ScaleX','ScaleY','Spacing','Angle','BorderStyle','Outline','Shadow','Alignment','MarginL','MarginR','MarginV','Encoding']
+		
 		self.name = ''
 		self.fontname = ''
 		self.fontsize = ''
@@ -434,6 +437,12 @@ V4.0 Format:
 		"""
 		try:
 			style_list = line.split(':', 1)
+			
+			if style_list[0].lower() != 'style':
+				#self.reset()
+				raise InvaildDataError('Invaild Data <%s>' % (line) )
+				return
+			
 			style_list = style_list[1].split(',')
 			
 			#parse
@@ -520,16 +529,16 @@ class AssTime:
 	"""
 	AssTime
 	"""
-	def __init__(self, time = None):
+	def __init__(self, time = ''):
 		"""
 		init AssTime
 		"""
-		if time is None:
+		if not time:
 			self.time = 0
 		else:
 			parse(time)
 			
-	def parse(self, color):
+	def parse(self, time):
 		"""
 		parse ass/srt time
 		
@@ -543,22 +552,23 @@ class AssTime:
 			tm = int(time_list[1])
 			
 			time_list_2 = time_list[2].split(',')
-			if time_list_2 == 2:
+			if len(time_list_2) == 2:
 				ts = int(time_list_2[0])
-				tms = int(time_list_2[1]) * 10
+				tms = int(time_list_2[1])
 			else:
 				time_list_2 = time_list[2].split('.')
-				if time_list_2 == 2:
+				if len(time_list_2) == 2:
 					ts = int(time_list_2[0])
-					tms = int(time_list_2[1])	
-		except:
+					tms = int(time_list_2[1]) * 10
+		except IndexError:
 			except_raise = True
 			
 		if except_raise is True:
 			self.time = 0
 			raise InvaildDataError('Invaild Data <%s>' % (time) )
 		else:
-			self.time = th*3600000 + tm*60000 + ts*1000 + ts
+			#print 'parse time:', th, tm, ts, tms
+			self.time = th*3600000 + tm*60000 + ts*1000 + tms
 
 	def get_ass_formated_time(self):
 		"""
@@ -576,8 +586,8 @@ class AssTime:
 		_ms = _ms % 1000
 		
 		tms = _ms
-		
-		return '%01d:%02d:%02d.%02d' %  (th, tm, ts, tms/10)
+		#print 'get time:', th, tm, ts, tms
+		return '%01d:%02d:%02d.%02d' %  (th, tm, ts, int(tms/10))
 		
 		
 		
@@ -625,8 +635,12 @@ class AssText:
 		else:
 			self.text = text
 	
-	def set_data(self, text):
+	def parse(self, text):
 		self.text = text
+		pass
+	
+	#def set_data(self, text):
+	#	self.text = text
 
 class AssEntryDialogue(AssEntry):
 	"""
@@ -636,12 +650,12 @@ class AssEntryDialogue(AssEntry):
 	def __init__(self, data, section, version):
 		AssEntry.__init__(self, data, section)
 		self.type = ENTRY_DIALOGUE
-		self.__init_data()
+		self.reset()
 		self.comment = False
 		self.need_update = False
 		self.parse(self.data, version)
 
-	def __init_data(self):
+	def reset(self):
 		"""
 		init internal data here
 		Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -663,7 +677,39 @@ class AssEntryDialogue(AssEntry):
 		return ENTRY_DIALOGUE
 		
 	def parse(self, line, version):
-		pass
+		try:
+			event_list = line.split(':', 1)
+			
+			if event_list[0].lower() == 'dialogue':
+				self.comment = False
+			elif event_list[0].lower() == 'comment':
+				self.comment = True
+			else:
+				#self.reset()	
+				raise InvaildDataError('Invaild Data <%s>' % (line) )
+				return
+			
+			event_list = event_list[1].split(',', 9)
+			i = 0
+			if version == 0 or event_list[i].strip().startswith('marked'):
+				self.layer = 0
+			else:
+				self.layer = int(event_list[i])		#0
+			
+			i += 1; self.start.parse(event_list[i].strip())	#1
+			i += 1; self.end.parse(event_list[i].strip())	#2
+			i += 1; self.style = event_list[i].strip()		#3
+			i += 1; self.name = event_list[i].strip()	#4
+			i += 1; self.marginl = int(event_list[i])		#5
+			i += 1; self.marginr = int(event_list[i])		#6
+			i += 1; self.marginv = int(event_list[i])	#7
+			i += 1; self.effect = event_list[i].strip()	#8
+			i += 1; self.text.parse(event_list[i].strip())	#9
+		except IndexError, msg:
+			print IndexError, ':', msg
+		else:
+			pass
+			
 	
 	def form_data(self):
 		"""
