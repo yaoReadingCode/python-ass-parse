@@ -396,7 +396,6 @@ V4.0 Format:
 		Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, 
 		ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 		"""
-
 		self.name = ''
 		self.fontname = ''
 		self.fontsize = ''
@@ -438,18 +437,17 @@ V4.0 Format:
 			style_list = style_list[1].split(',')
 			
 			#parse
-			i = 0;		self.name = style_list[i].strip()			#0
+			i = 0;		self.name = style_list[i].strip()		#0
 			i += 1;	self.fontname = style_list[i].strip()		#1
-			i += 1;	self.fontsize = int(style_list[i])			#2
+			i += 1;	self.fontsize = int(style_list[i])		#2
 			
 			i += 1;	self.primary_color.parse(style_list[i].strip())	#3
-			i += 1;	self.secondary_color.parse(style_list[i].strip())#4
-			if version is 0:	
-				i += 1;	self.outline_color.parse(style_list[i+1].strip())		##6
-				i += 1;	self.back_color.parse(style_list[i].strip())		##6
-			else:
-				i += 1;	self.outline_color.parse(style_list[i].strip())		#5
-				i += 1;	self.back_color.parse(style_list[i].strip())		#6
+			i += 1;	self.secondary_color.parse(style_list[i].strip())	#4
+			i += 1;	self.outline_color.parse(style_list[i].strip())		#5
+			i += 1;	self.back_color.parse(style_list[i].strip())		#6
+			if version is not 0:
+				#SSA uses BackColour for both outline and shadow, this will destroy SSA's TertiaryColour
+				self.outline_color= self.back_color	#ssa color
 
 			i += 1;	self.bold = int(style_list[i]) and True or False		#7
 			i += 1;	self.italic = int(style_list[i]) and True or False		#8
@@ -457,10 +455,10 @@ V4.0 Format:
 			if version is not 0:
 				i += 1;	self.underline = int(style_list[i]) and True or False	#9
 				i += 1;	self.strikeout = int(style_list[i]) and True or False	#10
-				i += 1;	self.scalex = float(style_list[i])								#11
-				i += 1;	self.scaley = float(style_list[i])								#12
-				i += 1;	self.spacing = float(style_list[i])								#13
-				i += 1;	self.angle = float(style_list[i])								#14
+				i += 1;	self.scalex = float(style_list[i])			#11
+				i += 1;	self.scaley = float(style_list[i])			#12
+				i += 1;	self.spacing = float(style_list[i])			#13
+				i += 1;	self.angle = float(style_list[i])			#14
 			else:
 				self.underline = False;
 				self.strikeout = False;
@@ -469,13 +467,13 @@ V4.0 Format:
 				self.spacing = 0;
 				self.angle = 0.0;		
 		
-			i += 1;	self.borderstyle = int(style_list[i])	#15    /    #15-6
-			i += 1;	self.outline = int(style_list[i])		#16    /    #16-6
-			i += 1;	self.shadow = int(style_list[i])		#17
-			i += 1;	self.alignment = int(style_list[i])		#18
-			i += 1;	self.margin_l = int(style_list[i])		#19
-			i += 1;	self.margin_r = int(style_list[i])		#20
-			i += 1;	self.margin_v = int(style_list[i])		#21
+			i += 1;	self.borderstyle = int(style_list[i])	#15    /    #15-6 for ssa
+			i += 1;	self.outline = int(style_list[i])		#16    /    #16-6 for ssa
+			i += 1;	self.shadow = int(style_list[i])		#17    /    #17-6 for ssa
+			i += 1;	self.alignment = int(style_list[i])		#18    /    #18-6 for ssa
+			i += 1;	self.margin_l = int(style_list[i])		#19    /    #19-6 for ssa
+			i += 1;	self.margin_r = int(style_list[i])		#20   /    #20-6 for ssa
+			i += 1;	self.margin_v = int(style_list[i])		#21    /    #21-6 for ssa
 			#Note: 如果是version=2, 即v4.0++ 则包含4个margin参数
 			#TODO:
 			if version is 2:
@@ -483,9 +481,9 @@ V4.0 Format:
 
 			if version is 0:
 				i += 1
-				i += 1;	self.encoding = int(style_list[i])	#23-6
+				i += 1;	self.encoding = int(style_list[i])	#23-6 for ssa
 			else:
-				i += 1;	self.encoding = int(style_list[i])	#22    /     23
+				i += 1;	self.encoding = int(style_list[i])	#22    /     #23 for ass v4.0++
 			
 		except IndexError, msg:
 			print IndexError, ':', msg
@@ -518,32 +516,172 @@ V4.0 Format:
 		"""
 		self.data = self.form_data()
 
+class AssTime:
+	"""
+	AssTime
+	"""
+	def __init__(self, time = None):
+		"""
+		init AssTime
+		"""
+		if time is None:
+			self.time = 0
+		else:
+			parse(time)
+			
+	def parse(self, color):
+		"""
+		parse ass/srt time
+		
+		ass/ssa time format as:	0:00:03.00
+		srt time format as:	00:00:03,000
+		"""
+		except_raise = False
+		try:
+			time_list = time.split(':')
+			th = int(time_list[0])
+			tm = int(time_list[1])
+			
+			time_list_2 = time_list[2].split(',')
+			if time_list_2 == 2:
+				ts = int(time_list_2[0])
+				tms = int(time_list_2[1]) * 10
+			else:
+				time_list_2 = time_list[2].split('.')
+				if time_list_2 == 2:
+					ts = int(time_list_2[0])
+					tms = int(time_list_2[1])	
+		except:
+			except_raise = True
+			
+		if except_raise is True:
+			self.time = 0
+			raise InvaildDataError('Invaild Data <%s>' % (time) )
+		else:
+			self.time = th*3600000 + tm*60000 + ts*1000 + ts
+
+	def get_ass_formated_time(self):
+		"""
+		Note: 
+		"""
+		_ms = self.time
+		
+		th = int(_ms / 3600000)
+		_ms = _ms % 3600000
+		
+		tm = int(_ms / 60000)
+		_ms = _ms % 60000
+		
+		ts = int(_ms / 1000)
+		_ms = _ms % 1000
+		
+		tms = _ms
+		
+		return '%01d:%02d:%02d.%02d' %  (th, tm, ts, tms/10)
+		
+		
+		
+	def get_ssa_formated_time(self):
+		return self.get_ass_formated_time()
+
+	def get_srt_formated_time(self):
+		_ms = self.time
+		
+		th = int(_ms / 3600000)
+		_ms = _ms % 3600000
+		
+		tm = int(_ms / 60000)
+		_ms = _ms % 60000
+		
+		ts = int(_ms / 1000)
+		_ms = _ms % 1000
+		
+		tms = _ms
+		
+		return '%01d:%02d:%02d,%03d' % (th, tm, ts, tms)
+		
+	#def __get_separated_time(self):
+	#	_ms = self.time
+	#	
+	#	th = int(_ms / 3600000)
+	#	_ms = _ms % 3600000
+	#	
+	#	tm = int(_ms / 60000)
+	#	_ms = _ms % 60000
+	#	
+	#	ts = int(_ms / 1000)
+	#	_ms = _ms % 1000
+	#	
+	#	tms = _ms
+	#	
+	#	return (th, tm, ts, tms)
+
+class AssText:
+	"""
+	"""
+	def __init__(self, text = ''):
+		if not text:
+			self.text = ''
+		else:
+			self.text = text
+	
+	def set_data(self, text):
+		self.text = text
+
 class AssEntryDialogue(AssEntry):
 	"""
 	AssDialogue类
 	实现[Events] Section中的Dialogue项目存储和操作
 	"""
-	def __init__(self, data, section):
+	def __init__(self, data, section, version):
 		AssEntry.__init__(self, data, section)
 		self.type = ENTRY_DIALOGUE
-		##self.comment = False
-		##self.title = ''
-		##self.content = ''
+		self.__init_data()
+		self.comment = False
 		self.need_update = False
-		self.parse()
+		self.parse(self.data, version)
 
+	def __init_data(self):
+		"""
+		init internal data here
+		Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+		"""
+		self.layer = 0
+		self.start = AssTime()
+		self.end = AssTime()
+		self.style = ''
+		self.name = ''
+		self.marginl = 0
+		self.marginr = 0
+		self.marginv = 0
+		self.effect = ''
+		self.text = AssText()
+		
+		#self.layer, self.start, self.end, self.style, self.name, self.marginl, self.marginr, self.marginv, self.effect, self.text
+		
 	def get_type(self):
 		return ENTRY_DIALOGUE
 		
-	def parse(self):
+	def parse(self, line, version):
 		pass
 	
 	def form_data(self):
 		"""
 		根据tag信息生成数据，并直接返回
+		Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 		"""
-		#return '' % ()
-		pass
+		return '%s: %d,%s,%s,%s,%s,%04d,%04d,%04d,%s,%s' % \
+				(
+					self.comment and 'Comment' or 'Dialogue',
+					self.layer, 
+					self.start.get_ass_formated_time(), 
+					self.end.get_ass_formated_time(), 
+					self.style, 
+					self.name, 
+					self.marginl, self.marginr, self.marginv, 
+					self.effect, 
+					self.text.text
+				)
 		
 	def update_data(self):
 		"""
@@ -626,28 +764,47 @@ class AssEvents:
 	"""
 	def __init__(self):
 		self.events = []
-		self.format = ''
+		self.format = AssEntry('', '[Events]')
+		self.trueversion = -1
 		
-	def parse(self, line):
+	def parse(self, line, version):
 		if line.startswith('Format:'):
-			self.format= 'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text'
+			self.format.set_data('Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text')
 		#elif line.startswith('Dialogue:'):
-		else:
+		
+		if line.startswith('Format:'):
 			try:
-				event = AssEntryDialogue(line, '[Events]')
+				low_format_str = line.split(':', 1)[1].strip().lower()
+				if low_format_str.startswith('marked'):		#SSA style
+					self.trueversion = 0
+				elif low_format_str.startswith('layer'):		#ASS V4.0+
+					self.trueversion = 1
+				else:
+					self.trueversion = version
+			except IndexError, msg:
+				print IndexError, ':', msg
+
+			self.format.set_data('Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text')
+					
+		elif line.startswith('Dialogue:') or line.startswith('Comment:'):
+			try:
+				event = AssEntryDialogue(line, '[Events]', self.trueversion)
 			except UnknowDataError, err_msg:
 				print UnknowDataError, ':', err_msg
 			else:
 				self.events.append(event)
+				
+		elif line:
+			raise UnknowDataError('Unknow Data <%s>' % (line))
 			
 	def dump(self):
 		print ('================== ASS Event Dump Begin ===================')
 		print '[Events]'
-		print self.format
+		print self.format.data
 		#for i in range(len(self.events)):
 			#self.events[i].dump()
 		for i in range(len(self.events)):
-			print self.events[i].form_data()
+			print self.events[i].form_data().encode('utf-8')
 			self.events[i].dump()
 		print ('=================== ASS Event Dump End ====================')
 	
@@ -814,11 +971,11 @@ class AssParse(AssFile):
 			
 			else:
 				if self.section == '[Script Info]':
-					self.script_info.parse(line)
+					self.script_info.parse(line)#line, self.version)
 				elif self.section == '[V4+ Styles]':
 					self.styles.parse(line, self.version)
 				elif self.section == '[Events]':
-					self.events.parse(line)
+					self.events.parse(line, self.version)
 				else:
 					raise UnknowDataError("Unkonw Data: <%s>" % (line))
 
