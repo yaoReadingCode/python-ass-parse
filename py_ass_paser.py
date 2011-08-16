@@ -636,6 +636,9 @@ class AssText:
 			self.text = text
 	
 	def parse(self, text):
+		"""
+		parse ass tag
+		"""
 		self.text = text
 		pass
 	
@@ -801,7 +804,7 @@ class AssStyles:
 			#self.styles[i].dump()
 		for i in range(len(self.styles)):
 			print self.styles[i].form_data().encode('utf-8')
-			self.styles[i].dump()
+			#self.styles[i].dump()
 		print ('=================== ASS Style Dump End ====================')
 
 class AssEvents:
@@ -843,6 +846,43 @@ class AssEvents:
 		elif line:
 			raise UnknowDataError('Unknow Data <%s>' % (line))
 			
+	def sort(self, reverse=False):
+		"""
+		sort by text
+		"""
+		pass
+		#self.events.sort(cmp=lambda x,y: cmp(x.text.text, y.text.text), reverse=reverse)
+		
+	def sort_by_layer(self, reverse=False):
+		"""
+		sort by layer
+		"""
+		self.events.sort(cmp=lambda x,y: cmp(x.layer, y.layer), reverse=reverse)
+		
+	def sort_by_start(self, reverse=False):
+		"""
+		sort by start time
+		"""
+		self.events.sort(cmp=lambda x,y: cmp(x.start.time, y.start.time), reverse=reverse)
+
+	def sort_by_end(self, reverse=False):
+		"""
+		sort by end time
+		"""
+		self.events.sort(cmp=lambda x,y: cmp(x.end.time, y.end.time), reverse=reverse)
+
+	def sort_by_style(self, reverse=False):
+		"""
+		sort by end style
+		"""
+		self.events.sort(cmp=lambda x,y: cmp(x.style.lower(), y.style.lower()), reverse=reverse)
+
+	def sort_by_name(self, reverse=False):
+		"""
+		sort by end name
+		"""
+		self.events.sort(cmp=lambda x,y: cmp(x.name.lower(), y.name.lower()), reverse=reverse)
+		
 	def dump(self):
 		print ('================== ASS Event Dump Begin ===================')
 		print '[Events]'
@@ -851,7 +891,7 @@ class AssEvents:
 			#self.events[i].dump()
 		for i in range(len(self.events)):
 			print self.events[i].form_data().encode('utf-8')
-			self.events[i].dump()
+			#self.events[i].dump()
 		print ('=================== ASS Event Dump End ====================')
 	
 ##class AssParseBase:
@@ -1034,6 +1074,9 @@ if __name__ == "__main__" :
 	filename1 = './l.ass'
 	filename2 = './l.ssa'
 	coding = 'utf-8'
+	#import sys
+	#f = open('./l.txt', 'w')
+	#sys.stdout = f
 
 	obj1 = AssParse(filename1, coding)
 	#obj1.file_dump()
@@ -1042,9 +1085,20 @@ if __name__ == "__main__" :
 	obj1.events.dump()
 	#obj1.parse()
 	#obj1.dump()
+	##obj1.events.sort()
+	obj1.events.sort_by_layer()
+	obj1.events.dump()
+	obj1.events.sort_by_start()
+	obj1.events.dump()
+	obj1.events.sort_by_end()
+	obj1.events.dump()
+	obj1.events.sort_by_style()
+	obj1.events.dump()
+	obj1.events.sort_by_name()
+	obj1.events.dump()
 	
-	obj2 = AssParse(filename2, coding)
-	#obj2.file_dump()
-	obj2.script_info.dump()
-	obj2.styles.dump()
-	obj2.events.dump()
+	##obj2 = AssParse(filename2, coding)
+	###obj2.file_dump()
+	##obj2.script_info.dump()
+	##obj2.styles.dump()
+	##obj2.events.dump()
