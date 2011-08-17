@@ -95,3 +95,6 @@ ENTRY_STYLE = 2
 ENTRY_COMMENT = 3
 #ENTRY_ATTACHMENT = 4
 ENTRY_DIALOGUE = 1000
+
+if __name__ == "__main__":
+	raise Exception('UnExecutable!')

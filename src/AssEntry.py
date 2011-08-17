@@ -43,5 +43,11 @@ class AssEntry:
 		#print self.data.encode('utf-8')
 		print self.data.encode(encoding)
 
+def _test_AssEntry():
+	"""
+	test case
+	"""
+	print 'AssEntry Test:'
+
 if __name__ == "__main__":
-	print 'test AssEntry'
+	_test_AssEntry()

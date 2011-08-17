@@ -155,3 +155,12 @@ class AssScriptInfo:
 		for i in range(len(self.script_info)):
 			self.script_info[i].dump()
 		print ('================== Script Info Dump End ===================')
+		
+def _test_AssScriptInfo():
+	"""
+	test case
+	"""
+	print 'AssScriptInfo Test:'
+
+if __name__ == "__main__":
+	_test_AssScriptInfo()

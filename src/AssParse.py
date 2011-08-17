@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 """
-    Python Ass Parser
+Ass Parser
 """
 
 from AssFile import *
@@ -16,7 +16,7 @@ from AssEvent import *
 ##	"""
 ##	def __init__(self):
 ##		print ('AssParseBase init')
-	
+
 class AssParse(AssFile):
 	"""
 	Ass Pase Class
@@ -76,14 +76,17 @@ class AssParse(AssFile):
 		except UnknowDataError, err_msg:
 			print UnknowDataError, ':', err_msg
 
-if __name__ == "__main__" :
-	# just for test
+def _test_AssParse():
+	"""
+	test case
+	"""
+	print 'AssParse Test:'
 
-	filename1 = './l.ass'
-	filename2 = './l.ssa'
+	filename1 = '../test_subs/l.ass'
+	filename2 = '../test_subs/l.ssa'
 	coding = 'utf-8'
 	#import sys
-	#f = open('./l.txt', 'w')
+	#f = open('../test_subs/l.txt', 'w')
 	#sys.stdout = f
 
 	obj1 = AssParse(filename1, coding)
@@ -109,3 +112,6 @@ if __name__ == "__main__" :
 	##obj2.script_info.dump()
 	##obj2.styles.dump()
 	##obj2.events.dump()
+
+if __name__ == "__main__":
+	_test_AssParse()
