@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import re
+
 BLOCK = [
 				'BLOCK_BASE',
-				'BLOCK_NORMAL',
+				'BLOCK_PLAIN',
 				'BLOCK_OVERRIDE',
 				'BLOCK_DRAWING'
 			]
@@ -78,13 +80,13 @@ class AssBlockDrawing(AssBlockBase):
 	def parse(self):
 		pass
 
-class AssBlockNormal(AssBlockBase):
+class AssBlockPLAIN(AssBlockBase):
 	"""
-	
+	plaintext
 	"""
 	def __init__(self, text):
 		AssBlockBase.__init__(self, text)
-		self.type = BLOCK_DICT['BLOCK_NORMAL']
+		self.type = BLOCK_DICT['BLOCK_PLAIN']
 
 	#def parse(self):
 	#	pass
@@ -119,17 +121,28 @@ class AssText:
 		"""
 		parse ass tag
 		"""
-		str_list_a = text.split('{')
-		str_list_b = []
-		for i in range(len(str_list_a)):
-			str_list_b += str_list_a[i].split('}')
-			
+		
+		#str_list_a = text.split('{')
+		#str_list_b = []
+		#for i in range(len(str_list_a)):
+		#	str_list_b += str_list_a[i].split('}')
+		#	
+		#print '----------------------------------------------------------------'
+		#for item in str_list_b:
+		#	if item:
+		#		print ('[%s],' % (item)).encode('utf-8'),
+		#print '----------------------------------------------------------------'
+		
+		#try:
+		
+		pattern = r'\{?[^\}\{]+\}?'
+		text_list = re.findall(pattern, text)
 		print '----------------------------------------------------------------'
-		for item in str_list_b:
-			if item:
-				print ('[%s],' % (item)).encode('utf-8'),
+		for item in text_list:
+			print item.encode('utf-8'),
 		print '----------------------------------------------------------------'
-		#str_list += str_list_tmp for str_list_tmp in str_list_a
+		
+		
 		
 def _test_AssText():
 	"""
@@ -150,8 +163,6 @@ def _test_AssText():
 if __name__ == "__main__":
 	
 	from AssFile import *
-	
-
 
 	_test_AssText()
 
