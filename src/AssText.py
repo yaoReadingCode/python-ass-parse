@@ -1,27 +1,157 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+BLOCK = [
+				'BLOCK_BASE',
+				'BLOCK_NORMAL',
+				'BLOCK_OVERRIDE',
+				'BLOCK_DRAWING'
+			]
+BLOCK_DICT = dict([(c, i) for i, c in enumerate(BLOCK)]) 
+
+#enum ASS_ParameterClass {
+#	PARCLASS_NORMAL,
+#	PARCLASS_ABSOLUTE_SIZE,
+#	PARCLASS_ABSOLUTE_POS_X,
+#	PARCLASS_ABSOLUTE_POS_Y,
+#	PARCLASS_RELATIVE_SIZE_X,
+#	PARCLASS_RELATIVE_SIZE_Y,
+#	PARCLASS_RELATIVE_TIME_START,
+#	PARCLASS_RELATIVE_TIME_END,
+#	//PARCLASS_RELATIVE_TIME_START_CENTI,
+#	//PARCLASS_RELATIVE_TIME_END_CENTI,
+#	PARCLASS_KARAOKE,
+#	PARCLASS_DRAWING
+#};
+
+class AssOverrideTag:
+	"""
+	
+	"""
+	pass
+
+class AssBlockBase:
+	"""
+	AssBlockBase
+	"""
+	def __init__(self, text=None):
+		#self.type = BLOCK_DICT['BLOCK_BASE']
+		if not text:
+			self.reset()
+		else:
+			self.set(text)
+
+	def set(self, text):
+		self.text = text
+		self.parse()
+		
+	def reset(self):
+		self.text = ''
+	
+	def parse(self):
+		raise Exception('Need Override it here')
+	
+
+class AssBlockOverride(AssBlockBase):
+	"""
+	
+	"""
+	def __init__(self, text):
+		self.tags = []
+		AssBlockBase.__init__(self, text)
+		self.type = BLOCK_DICT['BLOCK_OVERRIDE']
+
+	def parse(self):
+		self.parse_tag()
+
+	def parse_tag(self):
+		pass
+
+class AssBlockDrawing(AssBlockBase):
+	"""
+
+	"""
+	def __init__(self, text):
+		AssBlockBase.__init__(self, text)
+		self.type = BLOCK_DICT['BLOCK_DRAWING']
+
+	def parse(self):
+		pass
+
+class AssBlockNormal(AssBlockBase):
+	"""
+	
+	"""
+	def __init__(self, text):
+		AssBlockBase.__init__(self, text)
+		self.type = BLOCK_DICT['BLOCK_NORMAL']
+
+	#def parse(self):
+	#	pass
+
 class AssText:
 	"""
+	AssText
+	Ass字幕文本类， 包含tag
 	"""
-	def __init__(self, text = ''):
+	def __init__(self, text = None):
+		"""
+		init
+		"""
 		if not text:
-			self.text = ''
+			self.reset()
 		else:
-			self.text = text
+			self.set(text)
+	
+	def set(self, text):
+		"""
+		1. set internal data text
+		2. parse  internal data text
+		"""
+		self.text = text
+		self.parse(self.text)
+	
+	def reset(self):
+		self.text = ''
+		self.blocks = []
 	
 	def parse(self, text):
 		"""
 		parse ass tag
 		"""
-		self.text = text
-		pass
+		str_list_a = text.split('{')
+		str_list_b = []
+		for i in range(len(str_list_a)):
+			str_list_b += str_list_a[i].split('}')
+			
+		print '----------------------------------------------------------------'
+		for item in str_list_b:
+			if item:
+				print ('[%s],' % (item)).encode('utf-8'),
+		print '----------------------------------------------------------------'
+		#str_list += str_list_tmp for str_list_tmp in str_list_a
 		
 def _test_AssText():
 	"""
 	test case
 	"""
 	print 'AssText Test:'
+	
+	file = '../test_subs/ass_text.txt'
+	coding = 'utf-8'
+	
+	f = AssFile(file, coding)
+	
+	for i in range(len(f.lines)):
+		obj = AssText(f.lines[i])
+		#print obj.text.encode('utf-8')
+
 
 if __name__ == "__main__":
+	
+	from AssFile import *
+	
+
+
 	_test_AssText()
+

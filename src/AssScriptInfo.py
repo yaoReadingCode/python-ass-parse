@@ -139,8 +139,12 @@ class AssScriptInfo:
 	AssScriptInfo
 	"""
 	def __init__(self):
-		self.script_info = []
+		self.reset()
 		
+	def reset(self):
+		self.script_info = []
+		self.cur = 0	#current list(script_info) index
+
 	def parse(self, line):
 		try:
 			info = AssEntryInfo(line, '[Script Info]')

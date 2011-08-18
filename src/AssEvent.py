@@ -68,7 +68,7 @@ class AssEntryDialogue(AssEntry):
 			i += 1; self.marginr = int(event_list[i])		#6
 			i += 1; self.marginv = int(event_list[i])	#7
 			i += 1; self.effect = event_list[i].strip()	#8
-			i += 1; self.text.parse(event_list[i])	#9
+			i += 1; self.text.set(event_list[i])	#9
 		except IndexError, msg:
 			print IndexError, ':', msg
 		else:

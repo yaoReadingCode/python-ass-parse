@@ -32,8 +32,6 @@ class FileBase:
 		except IOError, err_msg: 
 			print IOError, ':', err_msg
 			self.filename = ''
-		#except:
-		#	pass
 		else:
 			print 'open file success!'
 		finally:
