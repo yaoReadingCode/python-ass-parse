@@ -38,12 +38,12 @@ class AssOverrideTag:
 	
 	"""
 	def __init__(self, data):
+		self.name = None
 		self.parameters = []
 		self.parse(data)
 		
 	def parse(self):
 		pass
-		
 
 class AssBlockBase:
 	"""
@@ -82,12 +82,13 @@ class AssBlockOverride(AssBlockBase):
 	def parse_tag(self):
 		pass
 	
-	def update_data(self):
+	def get_text(self):
 		"""
-		update text from self.tags
+		get text from self.tags
 		"""
 		pass
-		#self.text = ''.join(tag.data for tag in self.tags)
+	
+	
 
 class AssBlockDrawing(AssBlockBase):
 	"""
@@ -168,11 +169,29 @@ class AssText:
 				block = AssBlockPlain(work)
 				self.blocks.append(block)
 				
-	def tag_strip(self, key):
+	def tag_strip(self, tagname=None):
 		"""
-		strips specific tags
+		strip the specific tags
 		if key == None, strips all
 		"""
+		text = ''
+		for i in range(len(self.blocks)):
+			
+			if self.blocks[i].type == BLOCK_DICT['BLOCK_OVERRIDE']:
+				if not tagname:	#strip all of the tags
+					self.blocks[i].pop(i)
+				else:	#strip the specific tag
+					for tag in self.blocks[i].tags:
+						temp = ''
+						if tag.name != tagname:
+							temp += 
+							
+					#self.blocks[i].pop(i)
+						
+			else:
+				text += self.blocks[i].text
+
+	def update_data(self):
 		pass
 
 		
