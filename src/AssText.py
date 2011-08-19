@@ -159,8 +159,7 @@ class AssText:
 							drawing_level = int(tag.params[0])
 				else:
 					#override block with no backslashes
-					#assume it's a comment and not consider it an override block
-					#Currently we'll treat this as a plain text block, but feel free to create a new class
+					#here we assume it as a comment text and not consider it an override block
 					self.blocks.append( AssBlockPlain(work[1:-1]) )
 			elif drawing_level != 0:
 				block = AssBlockDrawing(work)
