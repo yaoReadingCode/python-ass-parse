@@ -3,12 +3,10 @@
 
 import re
 
-BLOCK = [
-				'BLOCK_BASE',
+BLOCK = [  'BLOCK_BASE',
 				'BLOCK_PLAIN',
 				'BLOCK_OVERRIDE',
-				'BLOCK_DRAWING'
-			]
+				'BLOCK_DRAWING' ]
 BLOCK_DICT = dict([(c, i) for i, c in enumerate(BLOCK)]) 
 
 #enum ASS_ParameterClass {
@@ -25,12 +23,27 @@ BLOCK_DICT = dict([(c, i) for i, c in enumerate(BLOCK)])
 #	PARCLASS_KARAOKE,
 #	PARCLASS_DRAWING
 #};
-
+class AssOverrideParameter:
+	"""
+	"""
+	def __init__(self, data):
+		self.parmeter = None
+		self.parse()
+	
+	def parse(self, data):
+		pass
+	
 class AssOverrideTag:
 	"""
 	
 	"""
-	pass
+	def __init__(self, data):
+		self.parameters = []
+		self.parse(data)
+		
+	def parse(self):
+		pass
+		
 
 class AssBlockBase:
 	"""
@@ -51,7 +64,7 @@ class AssBlockBase:
 		self.text = ''
 	
 	def parse(self):
-		raise Exception('Need Override it here')
+		raise Exception('Need override it here!')
 	
 
 class AssBlockOverride(AssBlockBase):
@@ -68,6 +81,13 @@ class AssBlockOverride(AssBlockBase):
 
 	def parse_tag(self):
 		pass
+	
+	def update_data(self):
+		"""
+		update text from self.tags
+		"""
+		pass
+		#self.text = ''.join(tag.data for tag in self.tags)
 
 class AssBlockDrawing(AssBlockBase):
 	"""
@@ -80,7 +100,7 @@ class AssBlockDrawing(AssBlockBase):
 	def parse(self):
 		pass
 
-class AssBlockPLAIN(AssBlockBase):
+class AssBlockPlain(AssBlockBase):
 	"""
 	plaintext
 	"""
@@ -88,8 +108,8 @@ class AssBlockPLAIN(AssBlockBase):
 		AssBlockBase.__init__(self, text)
 		self.type = BLOCK_DICT['BLOCK_PLAIN']
 
-	#def parse(self):
-	#	pass
+	def parse(self):
+		pass
 
 class AssText:
 	"""
@@ -100,6 +120,7 @@ class AssText:
 		"""
 		init
 		"""
+		self.blocks = []
 		if not text:
 			self.reset()
 		else:
@@ -115,34 +136,46 @@ class AssText:
 	
 	def reset(self):
 		self.text = ''
-		self.blocks = []
 	
 	def parse(self, text):
 		"""
 		parse ass tag
-		"""
-		
-		#str_list_a = text.split('{')
-		#str_list_b = []
-		#for i in range(len(str_list_a)):
-		#	str_list_b += str_list_a[i].split('}')
-		#	
-		#print '----------------------------------------------------------------'
-		#for item in str_list_b:
-		#	if item:
-		#		print ('[%s],' % (item)).encode('utf-8'),
-		#print '----------------------------------------------------------------'
-		
-		#try:
-		
+		"""		
 		pattern = r'\{?[^\}\{]+\}?'
 		text_list = re.findall(pattern, text)
-		print '----------------------------------------------------------------'
-		for item in text_list:
-			print item.encode('utf-8'),
-		print '----------------------------------------------------------------'
+		#print '----------------------------------------------------------------'
+		#for item in text_list:
+		#	print item.encode('utf-8'),
+		#print '----------------------------------------------------------------'
 		
-		
+		drawing_level = 0
+		for work in text_list:
+			if work[0] == '{' and work[-1] == '}':
+				if work.find('\\'):
+					block = AssBlockOverride(work[1:-1])
+					self.blocks.append(block)
+					for tag in block.tags:
+						if tag.name == '\\p':
+							drawing_level = int(tag.params[0])
+				else:
+					#override block with no backslashes
+					#assume it's a comment and not consider it an override block
+					#Currently we'll treat this as a plain text block, but feel free to create a new class
+					self.blocks.append( AssBlockPlain(work[1:-1]) )
+			elif drawing_level != 0:
+				block = AssBlockDrawing(work)
+				self.blocks.append(block)
+			else:
+				block = AssBlockPlain(work)
+				self.blocks.append(block)
+				
+	def tag_strip(self, key):
+		"""
+		strips specific tags
+		if key == None, strips all
+		"""
+		pass
+
 		
 def _test_AssText():
 	"""
