@@ -12,82 +12,94 @@ _Block_Tuple = (
 	)
 BLOCK_DICT = dict([(c, i) for i, c in enumerate(_Block_Tuple)])
 
-_Ass_Parameter_Type_Tuple = (
-	'NORMAL',
-	'ABSOLUTE_SIZE',
-	'ABSOLUTE_POS_X',
-	'ABSOLUTE_POS_Y',
-	'RELATIVE_SIZE_X',
-	'RELATIVE_SIZE_Y',
-	'RELATIVE_TIME_START',
-	'RELATIVE_TIME_END',
-	'KARAOKE',
-	'DRAWING',
-	)
-PARAM_TYPE_DICT = dict([(c, i) for i, c in enumerate(_Ass_Parameter_Type_Tuple)])
+#_Ass_Parameter_Type_Tuple = (
+#	'NORMAL',
+#	'ABSOLUTE_SIZE',
+#	'ABSOLUTE_POS_X',
+#	'ABSOLUTE_POS_Y',
+#	'RELATIVE_SIZE_X',
+#	'RELATIVE_SIZE_Y',
+#	'RELATIVE_TIME_START',
+#	'RELATIVE_TIME_END',
+#	'KARAOKE',
+#	'DRAWING',
+#	)
+#PARAM_TYPE_DICT = dict([(c, i) for i, c in enumerate(_Ass_Parameter_Type_Tuple)])
 
-Ass_Parameter_Name = (
+_Ass_Param_Type_Tuple = (
+	'TYPE_NONE',
+	'TYPE_INT',
+	'TYPE_FLOAT',
+	'TYPE_TEXT',
+	'TYPE_BOOL',
+	'TYPE_COLOR',
+	#'BLOCK'
+	)
+PARAM_TYPE_DICT = dict([(c, i) for i, c in enumerate(_Ass_Param_Type_Tuple)])
+
+Ass_Param_Dict = {
+##Style override codes
 	#\b<0 or 1>
-	u'\\b',
-	#\i<0 or 1>
-	u'\\i',
-	#\u<0 or 1>
-	u'\\u',
-	#\s<0 or 1>
-	u'\\s',
-	#\bord<width>
-	u'\\bord',
-	#\shad<depth>
-	u'\\shad',
-	#\be<0 or 1>
-	u'\\be',
-	#\fn<font name>
-	u'\\fn',
-	#\fs<font size>
-	u'\\fs',
-	#\fsc<x or y><percent>
-	u'\\fsc',
-	#\fsp<pixels >
-	u'\\fsp',
-	#\fr[<x/y/z>]<degrees>
-	u'\\fr',
-	#\fe<charset>
-	u'\\fe',
-	#\c&H<bbggrr>&
-	u'\\c',
-	#\a<alignment>
-	u'\\a',
-	#\an<alignment>
-	u'\\an',
-	#\k<duration>
-	u'\\k',
-	#\q<num>
-	u'\\q',
-	#\r[<style>]
-	u'\\r',
-##Functions:
-	#\t([<t1>, <t2>, ] [<accel>,] <style modifiers>)
-	u'\\t',
-	#\move(<x1>, <y1>, <x2>, <y2>[, <t1>, <t2>])
-	u'\\move',
-	#\pos(<x>, <y>)
-	u'\\pos',
-	#\org(<x>, <y>)
-	u'\\org',
-	#\fade(<a1>, <a2>, <a3>, <t1>, <t2>, <t3>, <t4>)
-	u'\\fade',
-	#\fad(<t1>, <t2>)
-	u'\\fad',
-	#\clip(<x1>, <y1>, <x2>, <y2>)
-	u'\\clip',
-	#\clip([<scale>,] <drawing commands>)
-	u'\\clip',
-##Drawings:
-	#\p<scale>
-	u'\\p',
-	#\pbo<y>
-	u'\\pbo',
-)
+	u'\\b' : PARAM_TYPE_DICT['TYPE_INT']
+#####	#\i<0 or 1>
+#####	u'\\i',
+#####	#\u<0 or 1>
+#####	u'\\u',
+#####	#\s<0 or 1>
+#####	u'\\s',
+#####	#\bord<width>
+#####	u'\\bord',
+#####	#\shad<depth>
+#####	u'\\shad',
+#####	#\be<0 or 1>
+#####	u'\\be',
+#####	#\fn<font name>
+#####	u'\\fn',
+#####	#\fs<font size>
+#####	u'\\fs',
+#####	#\fsc<x or y><percent>
+#####	u'\\fsc',
+#####	#\fsp<pixels >
+#####	u'\\fsp',
+#####	#\fr[<x/y/z>]<degrees>
+#####	u'\\fr',
+#####	#\fe<charset>
+#####	u'\\fe',
+#####	#\c&H<bbggrr>&
+#####	u'\\c',
+#####	#\a<alignment>
+#####	u'\\a',
+#####	#\an<alignment>
+#####	u'\\an',
+#####	#\k<duration>
+#####	u'\\k',
+#####	#\q<num>
+#####	u'\\q',
+#####	#\r[<style>]
+#####	u'\\r',
+#######Functions:
+#####	#\t([<t1>, <t2>, ] [<accel>,] <style modifiers>)
+#####	u'\\t',
+#####	#\move(<x1>, <y1>, <x2>, <y2>[, <t1>, <t2>])
+#####	u'\\move',
+#####	#\pos(<x>, <y>)
+#####	u'\\pos',
+#####	#\org(<x>, <y>)
+#####	u'\\org',
+#####	#\fade(<a1>, <a2>, <a3>, <t1>, <t2>, <t3>, <t4>)
+#####	u'\\fade',
+#####	#\fad(<t1>, <t2>)
+#####	u'\\fad',
+#####	#\clip(<x1>, <y1>, <x2>, <y2>)
+#####	u'\\clip',
+#####	###\clip([<scale>,] <drawing commands>)
+#####	##u'\\clip',
+#######Drawings:
+#####	#\p<scale>
+#####	u'\\p',
+#####	#\pbo<y>
+#####	u'\\pbo',
+}
 
 
 class AssOverrideParameter:
@@ -95,7 +107,7 @@ class AssOverrideParameter:
 	"""
 	def __init__(self, data):
 		self.parameter = None
-		self.type = PARAM_TYPE_DICT['NORMAL']
+		self.type = PARAM_TYPE_DICT['TYPE_NONE']
 		self.parse(data)
 	
 	def parse(self, data):
@@ -112,17 +124,20 @@ class AssOverrideTag:
 		self.parse(data)
 		
 	def parse(self, data):
-		for name in Ass_Parameter_Name:
+		for name, type in Ass_Param_Dict.items():
 			if data[:len(name)] == name:
 				#get the vaild tag name
 				self.name = name
 				try:
 					param = AssOverrideParameter(data[len(name):])
-				except InvaildDataError:
+				except InvaildDataError, msg:
+					print InvaildDataError, ':', msg
 					raise Exception('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\r\n\r\n')
 			else:
 				self.name = data
 				self.invaild = False
+				#print ('-------------- data is invaild: %s --------------' % (data)).encode('utf-8')
+				raise InvaildDataError('Invaild Parameter Data <%s>' % (data) )
 				
 			
 		self.invaild = True		#if invaild, set it as True, or else False
