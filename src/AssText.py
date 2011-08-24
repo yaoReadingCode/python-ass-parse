@@ -39,66 +39,68 @@ PARAM_TYPE_DICT = dict([(c, i) for i, c in enumerate(_Ass_Param_Type_Tuple)])
 
 Ass_Param_Dict = {
 ##Style override codes
-	#\b<0 or 1>
-	u'\\b' : PARAM_TYPE_DICT['TYPE_INT']
-#####	#\i<0 or 1>
-#####	u'\\i',
-#####	#\u<0 or 1>
-#####	u'\\u',
-#####	#\s<0 or 1>
-#####	u'\\s',
-#####	#\bord<width>
-#####	u'\\bord',
-#####	#\shad<depth>
-#####	u'\\shad',
-#####	#\be<0 or 1>
-#####	u'\\be',
-#####	#\fn<font name>
-#####	u'\\fn',
-#####	#\fs<font size>
-#####	u'\\fs',
-#####	#\fsc<x or y><percent>
-#####	u'\\fsc',
-#####	#\fsp<pixels >
-#####	u'\\fsp',
-#####	#\fr[<x/y/z>]<degrees>
-#####	u'\\fr',
-#####	#\fe<charset>
-#####	u'\\fe',
-#####	#\c&H<bbggrr>&
-#####	u'\\c',
-#####	#\a<alignment>
-#####	u'\\a',
-#####	#\an<alignment>
-#####	u'\\an',
-#####	#\k<duration>
-#####	u'\\k',
-#####	#\q<num>
-#####	u'\\q',
-#####	#\r[<style>]
-#####	u'\\r',
-#######Functions:
-#####	#\t([<t1>, <t2>, ] [<accel>,] <style modifiers>)
-#####	u'\\t',
-#####	#\move(<x1>, <y1>, <x2>, <y2>[, <t1>, <t2>])
-#####	u'\\move',
-#####	#\pos(<x>, <y>)
-#####	u'\\pos',
-#####	#\org(<x>, <y>)
-#####	u'\\org',
-#####	#\fade(<a1>, <a2>, <a3>, <t1>, <t2>, <t3>, <t4>)
-#####	u'\\fade',
-#####	#\fad(<t1>, <t2>)
-#####	u'\\fad',
-#####	#\clip(<x1>, <y1>, <x2>, <y2>)
-#####	u'\\clip',
-#####	###\clip([<scale>,] <drawing commands>)
-#####	##u'\\clip',
-#######Drawings:
-#####	#\p<scale>
-#####	u'\\p',
-#####	#\pbo<y>
-#####	u'\\pbo',
+	##\b<0 or 1>
+	#u'\\b' : PARAM_TYPE_DICT['TYPE_INT'],
+	##\i<0 or 1>
+	#u'\\i' : PARAM_TYPE_DICT['TYPE_INT'],
+	##\u<0 or 1>
+	#u'\\u',
+	##\s<0 or 1>
+	#u'\\s',
+	#\bord<width>
+	u'\\bord' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\shad<depth>
+	u'\\shad' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\be<0 or 1>
+	u'\\be' : PARAM_TYPE_DICT['TYPE_BOOL'],
+	#\fn<font name>
+	u'\\fn' : PARAM_TYPE_DICT['TYPE_TEXT'],
+	#\fs<font size>
+	u'\\fs' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\fsc<x or y><percent>
+	u'\\fsc' : PARAM_TYPE_DICT['TYPE_INT'],		##
+	#\fsp<pixels >
+	u'\\fsp' : PARAM_TYPE_DICT['TYPE_INT'],
+	
+####
+	#\fr[<x/y/z>]<degrees>
+	u'\\fr' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\fe<charset>
+	u'\\fe' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\c&H<bbggrr>&
+	u'\\c' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\a<alignment>
+	u'\\a' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\an<alignment>
+	u'\\an' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\k<duration>
+	u'\\k' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\q<num>
+	u'\\q' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\r[<style>]
+	u'\\r' : PARAM_TYPE_DICT['TYPE_INT'],
+##Functions:
+	#\t([<t1>, <t2>, ] [<accel>,] <style modifiers>)
+	u'\\t' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\move(<x1>, <y1>, <x2>, <y2>[, <t1>, <t2>])
+	u'\\move' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\pos(<x>, <y>)
+	u'\\pos' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\org(<x>, <y>)
+	u'\\org' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\fade(<a1>, <a2>, <a3>, <t1>, <t2>, <t3>, <t4>)
+	u'\\fade' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\fad(<t1>, <t2>)
+	u'\\fad' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\clip(<x1>, <y1>, <x2>, <y2>)
+	u'\\clip' : PARAM_TYPE_DICT['TYPE_INT'],
+	###\clip([<scale>,] <drawing commands>)
+	##u'\\clip',
+##Drawings:
+	#\p<scale>
+	u'\\p' : PARAM_TYPE_DICT['TYPE_INT'],
+	#\pbo<y>
+	u'\\pbo' : PARAM_TYPE_DICT['TYPE_INT'],
 }
 
 
@@ -128,16 +130,21 @@ class AssOverrideTag:
 			if data[:len(name)] == name:
 				#get the vaild tag name
 				self.name = name
+				print 'xxxxxxxxxxxxxxxxxxxxxxxx'
 				try:
 					param = AssOverrideParameter(data[len(name):])
 				except InvaildDataError, msg:
 					print InvaildDataError, ':', msg
 					raise Exception('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\r\n\r\n')
+				break
 			else:
-				self.name = data
-				self.invaild = False
-				#print ('-------------- data is invaild: %s --------------' % (data)).encode('utf-8')
-				raise InvaildDataError('Invaild Parameter Data <%s>' % (data) )
+				pass
+		else:
+			print data[:len(name)].encode('utf-8'), '==?', name.encode('utf-8')
+			self.name = data
+			self.invaild = False
+			#print ('-------------- data is invaild: %s --------------' % (data)).encode('utf-8')
+			raise InvaildDataError('Invaild Parameter Data <%s>' % (data) )
 				
 			
 		self.invaild = True		#if invaild, set it as True, or else False
@@ -277,7 +284,7 @@ class AssText:
 					self.blocks.append(block)
 					for tag in block.tags:
 						if tag.name == '\\p':
-							drawing_level = int(tag.params[0])
+							pass#drawing_level = int(tag.params[0])
 				else:
 					#override block with no backslashes
 					#here we assume it as a comment text and not consider it an override block
